@@ -5,7 +5,6 @@ from enum import Enum
 import a_star
 
 
-
 class Directions(Enum):
     UP, DOWN, LEFT, RIGHT = 'UP', 'DOWN', 'LEFT', 'RIGHT'
 
@@ -44,11 +43,13 @@ class AI:
         self.fruits = self.bot_fruits[self.__bot_id]
         self.find_fruits()
         self.set_eaten()
+        print(f"Eaten list --> {self.eaten}")
         self.get_position()
         return self.best_action()
 
     def best_action(self):
         f_order = self.fruit_order()
+        print(f"Fruit order --> {f_order}")
         min_path = None
         min_path_len = float('+inf')
         check, district = "", '*'
@@ -106,6 +107,8 @@ class AI:
 
     def set_eaten(self):
         print("this bot fruits: ", self.fruits)
+        for each in list(Fruits):
+            self.eaten[each] = 0
         for each in self.fruits:
             if each == Fruits.Orange.value:
                 self.eaten[Fruits.Orange] += 1
@@ -123,9 +126,10 @@ class AI:
 
     def set_must_eat(self):
         self.must_eat[Fruits.Orange] = max(self.must_eat[Fruits.Orange] - self.eaten[Fruits.Orange],
-                                           self.eaten[Fruits.Banana]*2 - self.eaten[Fruits.Orange])
+                                           self.eaten[Fruits.Banana] * 2 - self.eaten[Fruits.Orange])
         self.must_eat[Fruits.Apple] = max(self.must_eat[Fruits.Apple] - self.eaten[Fruits.Apple],
-                                          self.eaten[Fruits.Cherry] + self.eaten[Fruits.WaterMelon] - self.eaten[Fruits.Apple])
+                                          self.eaten[Fruits.Cherry] + self.eaten[Fruits.WaterMelon] - self.eaten[
+                                              Fruits.Apple])
         self.must_eat[Fruits.WaterMelon] = self.must_eat[Fruits.WaterMelon] - self.eaten[Fruits.WaterMelon]
         self.must_eat[Fruits.Cherry] = self.must_eat[Fruits.Cherry] - self.eaten[Fruits.Cherry]
         self.must_eat[Fruits.Banana] = self.must_eat[Fruits.Banana] - self.eaten[Fruits.Banana]
@@ -159,6 +163,6 @@ if __name__ == '__main__':
             print(board_str)
             break
         board = [board_str[i * board_size:(i + 1) * board_size] for i in range(board_size)]
-        print('\n'.join(board), end='\n-------------------------\n')
+        #print('\n'.join(board), end='\n-------------------------\n')
         fruits = [read_utf(s) for _ in range(bot_count)]
         write_utf(s, ai.do_turn(board, fruits).value)
