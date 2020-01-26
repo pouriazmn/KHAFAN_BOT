@@ -1,8 +1,10 @@
 import itertools
+import random
 import socket
 import struct
 from enum import Enum
 import a_star
+import json
 
 
 class Directions(Enum):
@@ -43,13 +45,11 @@ class AI:
         self.fruits = self.bot_fruits[self.__bot_id]
         self.find_fruits()
         self.set_eaten()
-        #print(f"Eaten list --> {self.eaten}")
         self.get_position()
         return self.best_action()
 
     def best_action(self):
         f_order = self.fruit_order()
-        print(f"Fruit order --> {f_order}")
         min_path = None
         min_path_len = float('+inf')
         check, district = "", '*'
@@ -72,10 +72,14 @@ class AI:
                 min_path_len = min_path_len_f
                 min_path = min_path_f
 
-        print(f'({self.x}, {self.y}) -> {min_path[0]}')
-        ac = self.get_action(min_path[0])
-        print(ac)
-        return ac
+        if min_path:
+            print(f'({self.x}, {self.y}) -> {min_path[0]}')
+            ac = self.get_action(min_path[0])
+            print(ac)
+            return ac
+        else:
+            print('Random move')
+            return random.choice(list(Directions))
 
     def get_action(self, pos):
         if pos.x - self.x == 1:
@@ -107,8 +111,6 @@ class AI:
 
     def set_eaten(self):
         print("this bot fruits: ", self.fruits)
-        for each in list(Fruits):
-            self.eaten[each] = 0
         for each in self.fruits:
             if each == Fruits.Orange.value:
                 self.eaten[Fruits.Orange] += 1
@@ -163,6 +165,6 @@ if __name__ == '__main__':
             print(board_str)
             break
         board = [board_str[i * board_size:(i + 1) * board_size] for i in range(board_size)]
-        #print('\n'.join(board), end='\n-------------------------\n')
+        print('\n'.join(board), end='\n-------------------------\n')
         fruits = [read_utf(s) for _ in range(bot_count)]
         write_utf(s, ai.do_turn(board, fruits).value)
