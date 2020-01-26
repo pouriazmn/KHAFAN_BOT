@@ -52,7 +52,7 @@ class AI:
         f_order = self.fruit_order()
         min_path = None
         min_path_len = float('+inf')
-        check, district = "", '*'
+        check, district = "", '*0123'
         for f, w in f_order:
             if w > 0:
                 check += f
