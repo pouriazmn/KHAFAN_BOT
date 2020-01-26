@@ -151,8 +151,7 @@ if __name__ == '__main__':
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(('127.0.0.1', 9898))
     init_data = read_utf(s)
-    bot_id, bot_count, board_size = map(int, init_data.split(','))
-    print(_)
+    bot_id, bot_count, board_size, max_turns = map(int, init_data.split(','))
     print(bot_id, bot_count, board_size)
     ai = AI(bot_id, bot_count, board_size)
     while True:
