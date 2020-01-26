@@ -3,6 +3,8 @@ import random
 import socket
 import struct
 from enum import Enum
+from time import sleep
+
 import a_star
 import json
 
@@ -40,6 +42,7 @@ class AI:
 
     def do_turn(self, board, bot_fruits):
         # write your bot's logic here
+        sleep(2)
         self.board = board
         self.bot_fruits = [None for _ in range(self.__bot_count)]
         for each in bot_fruits:
@@ -50,19 +53,9 @@ class AI:
         self.get_position()
         return self.best_action()
 
-    def best_action(self):
-        f_order = self.fruit_order()
+    def find_best_path(self, check, district, min_path_len):
         min_path = None
-        min_path_len = float('+inf')
-        check, district = "", '*0123'
-        for f, w in f_order:
-            if w > 0:
-                check += f
-            elif f not in 'OA':
-                district += f
-        print(f"district: {district}")
-        print(f"check: {check}")
-        for f in check:
+        for f, w in check:
             min_path_f = None
             min_path_len_f = float('+inf')
             for pos in self.fruit_positions[f]:
@@ -73,7 +66,28 @@ class AI:
             if min_path_len_f < min_path_len:
                 min_path_len = min_path_len_f
                 min_path = min_path_f
+        return min_path
 
+    def best_action(self):
+        f_order = self.fruit_order()
+        min_path = None
+        min_path_len = float('+inf')
+        check, district = [], '*0123'
+        for f, w in f_order:
+            if w > 0:
+                check.append((f, w))
+            elif f not in 'OA':
+                district += f
+        print(f"district: {district}")
+        print(f"check: {check}")
+        min_path = self.find_best_path(check, district, min_path_len)
+        if min_path is None:
+            print("no path for best!!!!!")
+            min_path = self.find_best_path(check, "*1234", min_path_len)
+        if min_path is None:
+            print('not even with no constraint')
+            print("random choice!")
+            return random.choice(list(Directions))
         print(f'({self.x}, {self.y}) -> {min_path[0]}')
         ac = self.get_action(min_path[0])
         print(ac)
@@ -166,6 +180,7 @@ if __name__ == '__main__':
             print(board_str)
             break
         board = [board_str[i * board_size:(i + 1) * board_size] for i in range(board_size)]
-        print('\n'.join(board), end='\n-------------------------\n')
+        print('----------------------------')
+        print('\n'.join(board))
         fruits = [read_utf(s) for _ in range(bot_count)]
         write_utf(s, ai.do_turn(board, fruits).value)
