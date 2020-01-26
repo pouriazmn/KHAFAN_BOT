@@ -123,10 +123,13 @@ class AI:
                 raise Exception
 
     def set_must_eat(self):
-        self.must_eat[Fruits.Orange] = max(self.must_eat[Fruits.Orange] - self.eaten[Fruits.Orange],
-                                           self.eaten[Fruits.Banana]*2 - self.eaten[Fruits.Orange])
-        self.must_eat[Fruits.Apple] = max(self.must_eat[Fruits.Apple] - self.eaten[Fruits.Apple],
-                                          self.eaten[Fruits.Cherry] + self.eaten[Fruits.WaterMelon] - self.eaten[Fruits.Apple])
+        self.must_eat[Fruits.Orange] = max(2, self.eaten[Fruits.Banana] * 2, self.must_eat[Fruits.Banana] * 2)
+        self.must_eat[Fruits.Orange] -= self.eaten[Fruits.Orange]
+
+        self.must_eat[Fruits.Apple] = max(2, self.eaten[Fruits.Cherry] + self.eaten[Fruits.WaterMelon],
+                                          self.must_eat[Fruits.Cherry] + self.must_eat[Fruits.WaterMelon])
+        self.must_eat[Fruits.Apple] -= self.eaten[Fruits.Apple]
+
         self.must_eat[Fruits.WaterMelon] = self.must_eat[Fruits.WaterMelon] - self.eaten[Fruits.WaterMelon]
         self.must_eat[Fruits.Cherry] = self.must_eat[Fruits.Cherry] - self.eaten[Fruits.Cherry]
         self.must_eat[Fruits.Banana] = self.must_eat[Fruits.Banana] - self.eaten[Fruits.Banana]
