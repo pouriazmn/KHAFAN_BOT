@@ -14,6 +14,9 @@ class Node(object):
     def __eq__(self, other):
         return self.position == other.position
 
+    def __hash__(self):
+        return hash(self.position)
+
     def __str__(self):
         return f"({self.x}, {self.y})"
 
@@ -55,12 +58,13 @@ def A_Star_Search(maze, start, end, dont_visit):
             [1, 0],
             [0, 1]]
 
-    to_visit = [start_node]
-    visited = []
+    to_visit = list()
+    visited = list()
+    to_visit.append(start_node)
 
     while len(to_visit) > 0:
-        next_node_index = 0
         next_node = to_visit[0]
+        next_node_index = 0
         f_next_node = next_node.h + next_node.g
         for ind, each in enumerate(to_visit[1:], start=1):
             if each.h + each.g < f_next_node:
@@ -83,14 +87,15 @@ def A_Star_Search(maze, start, end, dont_visit):
         for m in move:
             next_pos = (current_node.x + m[0],
                         current_node.y + m[1])
-            if next_pos[0] < 0 or next_pos[0] >= len(maze) or next_pos[1] < 0 or next_pos[1] >= len(maze):
+            if next_pos[0] < 0 or next_pos[0] >= len(maze) \
+                    or next_pos[1] < 0 or next_pos[1] >= len(maze):
                 continue
-
             if maze[next_pos[0]][next_pos[1]] not in dont_visit:
                 node = Node(current_node, next_pos)
-                if node in visited:
+                if node in visited or node in to_visit:
+                    # print(f"duplicate: {node.position}")
                     continue
-                print(f"adding to A* queue: {next_pos[0]}, {next_pos[1]}")
+                # print(f"adding to A* queue: {node.position}")
                 node.calc_h(end_node.position)
                 node.calc_g()
                 to_visit.append(node)
