@@ -22,14 +22,16 @@ class AI:
         self.bot_fruits, self.board, self.fruits, = None, None, None
         self.eaten = dict()
         self.must_eat = dict()
-        self.init_eaten()
+        self.empty_eaten()
+        self.init_must_eat()
         self.fruit_positions = dict()
         self.x, self.y = 0, 0
 
-    def init_eaten(self):
+    def empty_eaten(self):
         for each in list(Fruits):
             self.eaten[each] = 0
 
+    def init_must_eat(self):
         self.must_eat[Fruits.Orange] = 2
         self.must_eat[Fruits.Apple] = 2
         self.must_eat[Fruits.WaterMelon] = 1
@@ -107,6 +109,7 @@ class AI:
 
     def set_eaten(self):
         print("this bot fruits: ", self.fruits)
+        self.empty_eaten()
         for each in self.fruits:
             if each == Fruits.Orange.value:
                 self.eaten[Fruits.Orange] += 1
