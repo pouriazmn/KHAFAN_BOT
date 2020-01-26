@@ -81,15 +81,16 @@ def A_Star_Search(maze, start, end, dont_visit):
             return path[::-1]
 
         for m in move:
-            next_pos = (current_node.position[0] + m[0],
-                        current_node.position[1] + m[1])
+            next_pos = (current_node.x + m[0],
+                        current_node.y + m[1])
             if next_pos[0] < 0 or next_pos[0] >= len(maze) or next_pos[1] < 0 or next_pos[1] >= len(maze):
                 continue
-            print(f"running a*: {next_pos[0]}, {next_pos[1]}")
+
             if maze[next_pos[0]][next_pos[1]] not in dont_visit:
                 node = Node(current_node, next_pos)
                 if node in visited:
                     continue
+                print(f"adding to A* queue: {next_pos[0]}, {next_pos[1]}")
                 node.calc_h(end_node.position)
                 node.calc_g()
                 to_visit.append(node)

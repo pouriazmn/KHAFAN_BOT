@@ -123,7 +123,7 @@ class AI:
                 raise Exception
 
     def set_must_eat(self):
-        self.must_eat[Fruits.Orange] = max(self.must_eat[Fruits.Orange], self.eaten[Fruits.Orange],
+        self.must_eat[Fruits.Orange] = max(self.must_eat[Fruits.Orange] - self.eaten[Fruits.Orange],
                                            self.eaten[Fruits.Banana]*2 - self.eaten[Fruits.Orange])
         self.must_eat[Fruits.Apple] = max(self.must_eat[Fruits.Apple] - self.eaten[Fruits.Apple],
                                           self.eaten[Fruits.Cherry] + self.eaten[Fruits.WaterMelon] - self.eaten[Fruits.Apple])
@@ -149,9 +149,9 @@ def write_utf(sock: socket.socket, msg: str):
 
 if __name__ == '__main__':
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('192.168.43.177', 9898))
+    s.connect(('127.0.0.1', 9898))
     init_data = read_utf(s)
-    bot_id, bot_count, board_size, _ = map(int, init_data.split(','))
+    bot_id, bot_count, board_size = map(int, init_data.split(','))
     print(_)
     print(bot_id, bot_count, board_size)
     ai = AI(bot_id, bot_count, board_size)
