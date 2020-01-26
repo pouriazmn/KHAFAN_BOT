@@ -1,10 +1,9 @@
 import itertools
-import random
 import socket
 import struct
 from enum import Enum
 import a_star
-import json
+
 
 
 class Directions(Enum):
