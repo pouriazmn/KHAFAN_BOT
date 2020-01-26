@@ -43,7 +43,7 @@ class AI:
         self.fruits = self.bot_fruits[self.__bot_id]
         self.find_fruits()
         self.set_eaten()
-        print(f"Eaten list --> {self.eaten}")
+        #print(f"Eaten list --> {self.eaten}")
         self.get_position()
         return self.best_action()
 
