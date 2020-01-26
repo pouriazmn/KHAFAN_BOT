@@ -40,7 +40,7 @@ class Node(object):
 
 
 def A_Star_Search(maze, start, end, dont_visit):
-    print(maze)
+    # print(maze)
     start_node = Node(None, start)
     end_node = Node(None, end)
 
@@ -55,8 +55,7 @@ def A_Star_Search(maze, start, end, dont_visit):
             [1, 0],
             [0, 1]]
 
-    to_visit = []
-    to_visit.append(start_node)
+    to_visit = [start_node]
     visited = []
 
     while len(to_visit) > 0:

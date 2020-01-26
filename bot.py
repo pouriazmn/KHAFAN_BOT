@@ -58,12 +58,14 @@ class AI:
                 check += f
             else:
                 district += f
+        print(f"district: {district}")
+        print(f"check: {check}")
         for f in check:
             min_path_f = None
             min_path_len_f = float('+inf')
             for pos in self.fruit_positions[f]:
                 path = a_star.A_Star_Search(self.board, (self.x, self.y), pos, district)
-                if len(path) < min_path_len_f:
+                if path is not None and len(path) < min_path_len_f:
                     min_path_f = path
                     min_path_len_f = len(path)
             if min_path_len_f < min_path_len:
@@ -121,9 +123,9 @@ class AI:
                 raise Exception
 
     def set_must_eat(self):
-        self.must_eat[Fruits.Orange] = max(self.must_eat[Fruits.Orange],
+        self.must_eat[Fruits.Orange] = max(self.must_eat[Fruits.Orange], self.eaten[Fruits.Orange],
                                            self.eaten[Fruits.Banana]*2 - self.eaten[Fruits.Orange])
-        self.must_eat[Fruits.Apple] = max(self.must_eat[Fruits.Apple],
+        self.must_eat[Fruits.Apple] = max(self.must_eat[Fruits.Apple] - self.eaten[Fruits.Apple],
                                           self.eaten[Fruits.Cherry] + self.eaten[Fruits.WaterMelon] - self.eaten[Fruits.Apple])
         self.must_eat[Fruits.WaterMelon] = self.must_eat[Fruits.WaterMelon] - self.eaten[Fruits.WaterMelon]
         self.must_eat[Fruits.Cherry] = self.must_eat[Fruits.Cherry] - self.eaten[Fruits.Cherry]
@@ -133,6 +135,7 @@ class AI:
         self.set_must_eat()
         return list(map(lambda x: (getattr(x, 'value'), self.must_eat[x]),
                         sorted(list(Fruits), key=lambda x: self.must_eat[x])))
+
 
 def read_utf(sock: socket.socket):
     length = struct.unpack('>H', s.recv(2))[0]
@@ -146,13 +149,17 @@ def write_utf(sock: socket.socket, msg: str):
 
 if __name__ == '__main__':
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('127.0.0.1', 9898))
+    s.connect(('192.168.43.177', 9898))
     init_data = read_utf(s)
-    bot_id, bot_count, board_size = map(int, init_data.split(','))
+    bot_id, bot_count, board_size, _ = map(int, init_data.split(','))
+    print(_)
     print(bot_id, bot_count, board_size)
     ai = AI(bot_id, bot_count, board_size)
     while True:
         board_str = read_utf(s)
+        if board_str.startswith("WINNER"):
+            print(board_str)
+            break
         board = [board_str[i * board_size:(i + 1) * board_size] for i in range(board_size)]
         print('\n'.join(board), end='\n-------------------------\n')
         fruits = [read_utf(s) for _ in range(bot_count)]
