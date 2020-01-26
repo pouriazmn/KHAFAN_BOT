@@ -56,7 +56,7 @@ class AI:
         for f, w in f_order:
             if w > 0:
                 check += f
-            else:
+            elif f not in 'OA':
                 district += f
         print(f"district: {district}")
         print(f"check: {check}")
